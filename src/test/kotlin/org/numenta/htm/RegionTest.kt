@@ -1,6 +1,7 @@
 package org.numenta.htm
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RegionTest {
@@ -14,8 +15,12 @@ class RegionTest {
         assertEquals(regionSize, region.columns.size)
         region.columns.forEach {
             assertEquals(connectedSize, it.connectedSynapses.size)
+            val downBound = Properties.connectedPermThreshold - Properties.connectedPermInitialRange / 2.0
+            val upperBound = Properties.connectedPermThreshold + Properties.connectedPermInitialRange / 2.0
+            it.connectedSynapses.forEach{
+                assertTrue(it.permanence >= downBound)
+                assertTrue(it.permanence < upperBound)
+            }
         }
-
-
     }
 }
