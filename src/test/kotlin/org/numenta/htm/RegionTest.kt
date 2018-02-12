@@ -10,13 +10,25 @@ class RegionTest {
     fun initialization() {
         val regionSize = 10
         val inputSize = 5
-        val connectedSize = (inputSize * Properties.potentialPoolSize).toInt()
-        val region = Region(regionSize, inputSize)
+        val poolSize = 0.4
+        val threshold = 0.5
+        val initRange = 0.2
+        val connectedSize = (inputSize * poolSize).toInt()
+
+        val region = Region(regionSize, inputSize) {
+            spatialPooling {
+                potentialPoolSize = poolSize
+                connectedPermThreshold = threshold
+                connectedPermInitialRange = initRange
+            }
+        }
+
+
         assertEquals(regionSize, region.columns.size)
         region.columns.forEach {
             assertEquals(connectedSize, it.connectedSynapses.size)
-            val downBound = Properties.connectedPermThreshold - Properties.connectedPermInitialRange / 2.0
-            val upperBound = Properties.connectedPermThreshold + Properties.connectedPermInitialRange / 2.0
+            val downBound = threshold - initRange / 2.0
+            val upperBound = threshold + initRange / 2.0
             it.connectedSynapses.forEach{
                 assertTrue(it.permanence >= downBound)
                 assertTrue(it.permanence < upperBound)
