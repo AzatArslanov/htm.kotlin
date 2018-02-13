@@ -24,8 +24,8 @@ class RegionTest {
         }
 
 
-        assertEquals(regionSize, region.columns.size)
-        region.columns.forEach {
+        assertEquals(regionSize, region.field.columns.size)
+        region.field.columns.forEach {
             assertEquals(connectedSize, it.connectedSynapses.size)
             val downBound = threshold - initRange / 2.0
             val upperBound = threshold + initRange / 2.0

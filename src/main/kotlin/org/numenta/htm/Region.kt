@@ -3,21 +3,19 @@ package org.numenta.htm
 import java.util.*
 
 class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
-    val columns: MutableList<Column>
+    val field: Field
 
     private var sp: SpatialPooling = SpatialPooling()
 
     init {
         init()
-        columns = ArrayList(size)
+        field = Field(size)
         val countPotentialSynapses = (inputSize * sp.potentialPoolSize).toInt()
         val intRange = IntRange(0, inputSize - 1)
-        for (i in 0 until size) {
-            val column = Column()
+        field.columns.forEach { column ->
             intRange.shuffled().take(countPotentialSynapses).forEach {
                 column.connectedSynapses.add(Synapse(generateInitialPermanence(), it))
             }
-            columns.add(column)
         }
     }
 
@@ -37,9 +35,10 @@ class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
         var minOverlap: Int = 0
         var connectedPermThreshold = 0.5
         var connectedPermInitialRange = 0.2
+        var inhibitionRadius = 0
 
         private fun calcOverlap(input: Input) {
-            columns.forEach {
+            field.columns.forEach {
                 it.calcOverlap(input, sp.minOverlap)
             }
         }

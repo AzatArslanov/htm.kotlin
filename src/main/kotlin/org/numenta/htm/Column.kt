@@ -2,7 +2,7 @@ package org.numenta.htm
 
 class Column {
     var boost: Int = 0
-    var overlap : Int = 0
+    var overlap: Int = 0
 
     val connectedSynapses: MutableList<Synapse> = ArrayList()
 
