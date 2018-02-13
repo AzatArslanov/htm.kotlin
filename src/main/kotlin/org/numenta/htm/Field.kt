@@ -5,15 +5,14 @@ import kotlin.collections.ArrayList
 
 class Field(size: Int) {
     private val matrix: MutableList<MutableList<Column>>
-    private val list: MutableList<Column>
 
     val columns: List<Column>
-        get() = Collections.unmodifiableList(list)
+
 
     init {
         val sideSize = Math.sqrt(size.toDouble()).toInt()
         matrix = ArrayList()
-        list = ArrayList()
+        val list = ArrayList<Column>()
         for (i in 0 until sideSize) {
             val columns = ArrayList<Column>()
             for (j in 0 until sideSize) {
@@ -33,7 +32,7 @@ class Field(size: Int) {
             }
             matrix.add(rowToAdd)
         }
-
+        columns = Collections.unmodifiableList(list)
     }
 
 }
