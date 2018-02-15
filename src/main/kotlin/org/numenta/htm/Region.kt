@@ -3,13 +3,12 @@ package org.numenta.htm
 import java.util.*
 
 class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
-    val field: Field
+    val field = Field(size)
 
-    private var sp: SpatialPooling = SpatialPooling()
+    private var sp: SpatialPooling = SpatialPooling(field)
 
     init {
         init()
-        field = Field(size)
         val countPotentialSynapses = (inputSize * sp.potentialPoolSize).toInt()
         val intRange = IntRange(0, inputSize - 1)
         field.columns.forEach { column ->
@@ -19,8 +18,15 @@ class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
         }
     }
 
+    fun process(input: Input) {
+        //Phase #1: Overlap
+        sp.calcOverlap(input)
+        //Phase #2: Inhibition
+        sp.doInhibition(input)
+    }
+
     fun spatialPooling(init: SpatialPooling.() -> Unit) {
-        val spatialPooling = SpatialPooling()
+        val spatialPooling = SpatialPooling(field)
         spatialPooling.init()
         this.sp = spatialPooling
     }
@@ -28,19 +34,5 @@ class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
     private fun generateInitialPermanence() : Double {
         val initial = (sp.connectedPermInitialRange * 100.0 * Math.random()) / 100.0
         return (sp.connectedPermThreshold - sp.connectedPermInitialRange / 2.0) + initial
-    }
-
-    inner class SpatialPooling {
-        var potentialPoolSize: Double = 0.85
-        var minOverlap: Int = 0
-        var connectedPermThreshold = 0.5
-        var connectedPermInitialRange = 0.2
-        var inhibitionRadius = 0
-
-        private fun calcOverlap(input: Input) {
-            field.columns.forEach {
-                it.calcOverlap(input, sp.minOverlap)
-            }
-        }
     }
 }
