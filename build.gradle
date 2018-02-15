@@ -2,6 +2,7 @@ buildscript {
     ext {
         kotlin = '1.2.21'
         junit = '4.12'
+        mockito = '2.15.0'
     }
 
     repositories {
@@ -25,6 +26,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin"
 
     testCompile "junit:junit:$junit"
+    testCompile "org.mockito:mockito-core:$mockito"
 }
 
 compileKotlin {
