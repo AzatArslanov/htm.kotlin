@@ -44,8 +44,9 @@ class Field(size: Int) {
             throw IllegalArgumentException("Column isn't in Field")
         }
         val key = Pair(column, radius)
-        if (cache.contains(key)) {
-            return cache[key] ?: ArrayList()
+        val cacheResult = cache[key]
+        if (cacheResult != null) {
+            return cacheResult
         }
         val rowNumber = indexOf / sideSize
         val columnNumber = indexOf % sideSize
