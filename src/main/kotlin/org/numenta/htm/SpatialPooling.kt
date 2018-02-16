@@ -6,7 +6,7 @@ class SpatialPooling(private val field: Field) {
     var connectedPermThreshold = 0.5
     var connectedPermInitialRange = 0.2
     var inhibitionRadius = 0
-    var desiredLocalActivity = 2
+    var desiredLocalActivity = 0.3
 
     fun calcOverlap(input: Input) {
         field.columns.forEach {
@@ -24,8 +24,12 @@ class SpatialPooling(private val field: Field) {
     }
 
     private fun kthScore(neighbors: List<Column>) : Int {
-        val sortedWith = neighbors.sortedWith(compareBy({ it.overlap }))
-        return if (sortedWith.size > desiredLocalActivity) sortedWith[desiredLocalActivity-1].overlap else sortedWith.last().overlap
+        if (neighbors.isEmpty()) {
+            throw IllegalArgumentException("Neighbors is empty")
+        }
+        val sorted = neighbors.sortedByDescending {  it.overlap }
+        val index = ((sorted.size - 1) * desiredLocalActivity).toInt()
+        return sorted[index].overlap
     }
 
 }

@@ -26,19 +26,19 @@ class SpatialPoolingTest {
 
     @Test
     fun doInhibition() {
-        val c1 = Column()
-        c1.overlap = 1
-        val n1 = Column()
-        n1.overlap = 1
-        val n2 = Column()
-        n2.overlap = 1
+        val c1 = Column().apply { overlap = 2 }
+        val n1 = Column().apply { overlap = 1 }
+        val n2 = Column().apply { overlap = 2 }
+        val n3 = Column().apply { overlap = 3 }
 
         val columns = listOf(c1)
 
-        val neighbors = listOf(n1, n2)
+        val neighbors = listOf(n1, n2, n3)
 
         val field = mock(Field::class.java)
-        val spatialPooling = SpatialPooling(field)
+        val spatialPooling = SpatialPooling(field).apply {
+            desiredLocalActivity = 0.5
+        }
         val activeColumns = ArrayList<Column>()
 
         `when`(field.columns).thenReturn(columns)
