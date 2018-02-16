@@ -22,7 +22,7 @@ class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
         //Phase #1: Overlap
         sp.calcOverlap(input)
         //Phase #2: Inhibition
-        sp.doInhibition(input)
+        sp.doInhibition()
     }
 
     fun spatialPooling(init: SpatialPooling.() -> Unit) {

@@ -14,11 +14,18 @@ class SpatialPooling(private val field: Field) {
         }
     }
 
-    fun doInhibition(input: Input) {
+    fun doInhibition() {
         field.columns.forEach {
-            it.kthScore(field.calculateNeighbors(it, inhibitionRadius), desiredLocalActivity)
+            val minLocalActivity = kthScore(field.calculateNeighbors(it, inhibitionRadius))
+            if (it.overlap > 0 && it.overlap >= minLocalActivity) {
+                field.activeColumns.add(it)
+            }
         }
     }
 
+    private fun kthScore(neighbors: List<Column>) : Int {
+        val sortedWith = neighbors.sortedWith(compareBy({ it.overlap }))
+        return if (sortedWith.size > desiredLocalActivity) sortedWith[desiredLocalActivity-1].overlap else sortedWith.last().overlap
+    }
 
 }

@@ -6,10 +6,6 @@ class Column {
 
     val connectedSynapses: MutableList<Synapse> = ArrayList()
 
-    fun kthScore(neighbors: List<Column>, desiredLocalActivity: Int) : Int {
-        throw NotImplementedError()
-    }
-
     fun calcOverlap(input: Input, minOverlap: Int) {
         overlap = 0
         connectedSynapses.forEach {

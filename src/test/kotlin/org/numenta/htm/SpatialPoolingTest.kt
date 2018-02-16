@@ -1,5 +1,6 @@
 package org.numenta.htm
 
+import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
 
@@ -25,21 +26,27 @@ class SpatialPoolingTest {
 
     @Test
     fun doInhibition() {
-        val first = mock(Column::class.java)
-        val second = mock(Column::class.java)
+        val c1 = Column()
+        c1.overlap = 1
+        val n1 = Column()
+        n1.overlap = 1
+        val n2 = Column()
+        n2.overlap = 1
+
+        val columns = listOf(c1)
+
+        val neighbors = listOf(n1, n2)
+
         val field = mock(Field::class.java)
-        val columns = listOf(first, second)
-        `when`(field.columns).thenReturn(columns)
-        `when`(field.calculateNeighbors(any(), anyInt())).thenReturn(columns)
-
         val spatialPooling = SpatialPooling(field)
-        val input = Input(intArrayOf(1, 2, 3))
+        val activeColumns = ArrayList<Column>()
 
-        spatialPooling.doInhibition(input)
+        `when`(field.columns).thenReturn(columns)
+        `when`(field.activeColumns).thenReturn(activeColumns)
+        `when`(field.calculateNeighbors(c1, spatialPooling.inhibitionRadius)).thenReturn(neighbors)
 
-        verify(first, times(1)).kthScore(columns, spatialPooling.desiredLocalActivity)
-        verify(second, times(1)).kthScore(columns, spatialPooling.desiredLocalActivity)
-        verify(field, times(2)).calculateNeighbors(any(), anyInt())
+        spatialPooling.doInhibition()
+        Assert.assertTrue(activeColumns[0] == c1)
     }
 
     private fun <T> any(): T {
