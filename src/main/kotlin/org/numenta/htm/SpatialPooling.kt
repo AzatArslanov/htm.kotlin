@@ -1,6 +1,8 @@
 package org.numenta.htm
 
 class SpatialPooling(private val field: Field) {
+    val activeColumns: MutableList<Column> = ArrayList()
+
     var potentialPoolSize: Double = 0.85
     var minOverlap: Int = 0
     var connectedPermThreshold = 0.5
@@ -16,20 +18,11 @@ class SpatialPooling(private val field: Field) {
 
     fun doInhibition() {
         field.columns.forEach {
-            val minLocalActivity = kthScore(field.calculateNeighbors(it, inhibitionRadius))
-            if (it.overlap > 0 && it.overlap >= minLocalActivity) {
-                field.activeColumns.add(it)
+            val neighbors = field.calculateNeighbors(it, inhibitionRadius)
+            if (it.activate(neighbors, desiredLocalActivity)) {
+                activeColumns.add(it)
             }
         }
-    }
-
-    private fun kthScore(neighbors: List<Column>) : Int {
-        if (neighbors.isEmpty()) {
-            throw IllegalArgumentException("Neighbors is empty")
-        }
-        val sorted = neighbors.sortedByDescending {  it.overlap }
-        val index = ((sorted.size - 1) * desiredLocalActivity).toInt()
-        return sorted[index].overlap
     }
 
 }

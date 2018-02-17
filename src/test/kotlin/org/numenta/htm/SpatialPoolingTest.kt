@@ -1,6 +1,6 @@
 package org.numenta.htm
 
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 
@@ -39,14 +39,12 @@ class SpatialPoolingTest {
         val spatialPooling = SpatialPooling(field).apply {
             desiredLocalActivity = 0.5
         }
-        val activeColumns = ArrayList<Column>()
 
         `when`(field.columns).thenReturn(columns)
-        `when`(field.activeColumns).thenReturn(activeColumns)
         `when`(field.calculateNeighbors(c1, spatialPooling.inhibitionRadius)).thenReturn(neighbors)
 
         spatialPooling.doInhibition()
-        Assert.assertTrue(activeColumns[0] == c1)
+        assertTrue(spatialPooling.activeColumns[0] == c1)
     }
 
     private fun <T> any(): T {

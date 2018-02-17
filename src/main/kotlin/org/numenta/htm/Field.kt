@@ -10,7 +10,6 @@ class Field(size: Int) {
     private val cache: MutableMap<Pair<Column, Int>, List<Column>> = HashMap()
 
     val columns: List<Column>
-    val activeColumns: MutableList<Column> = ArrayList()
 
 
     init {
