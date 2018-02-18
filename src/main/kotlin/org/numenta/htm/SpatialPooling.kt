@@ -17,6 +17,7 @@ class SpatialPooling(private val field: Field) {
     }
 
     fun doInhibition() {
+        activeColumns.clear()
         field.columns.forEach {
             val neighbors = field.calculateNeighbors(it, inhibitionRadius)
             if (it.activate(neighbors, desiredLocalActivity)) {
