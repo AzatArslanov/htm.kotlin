@@ -19,6 +19,7 @@ class Column {
         }
         if (overlap < minOverlap) {
             overlap = 0
+            overlapStates.addState(false)
         } else {
             overlap *= boost
             overlapStates.addState(true)
@@ -31,6 +32,7 @@ class Column {
             activeStates.addState(true)
             return true
         }
+        activeStates.addState(false)
         return false
     }
 
