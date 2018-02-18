@@ -1,3 +1,3 @@
 package org.numenta.htm
 
-data class Synapse (val permanence: Double, val input: Int)
+data class Synapse (var permanence: Double, val input: Int)

@@ -6,20 +6,28 @@ import org.junit.Test
 internal class ColumnTest {
 
     @Test
-    fun calcOverlap() {
-        val column = Column()
-        val minOverlap = 0
-        column.boost = 1
-        column.connectedSynapses.add(Synapse(0.0, 1))
-        column.calcOverlap(Input(intArrayOf(1)), minOverlap)
-        Assert.assertEquals(1, column.overlap)
+    fun overlap() {
+        val column = Column().apply {
+            boost = 1
+            connectToInputField(listOf(1,2,3), 0.0, 0.0)
+        }
+        column.overlap(Input(intArrayOf(1, 2, 3)), 0)
+        Assert.assertEquals(3, column.overlap)
+
+        column.overlap(Input(intArrayOf(1, 2, 3)), 4)
+        Assert.assertEquals(0, column.overlap)
 
         column.boost = 2
-        column.calcOverlap(Input(intArrayOf(1)), minOverlap)
-        Assert.assertEquals(2, column.overlap)
+        column.overlap(Input(intArrayOf(1, 2, 3)), 0)
+        Assert.assertEquals(6, column.overlap)
+    }
 
-        column.boost = 0
-        column.calcOverlap(Input(intArrayOf(1)), minOverlap)
-        Assert.assertEquals(0, column.overlap)
+    @Test
+    fun connectToInputField() {
+        val column = Column().apply {
+            connectToInputField(listOf(1,2,3), 0.0, 0.0)
+        }
+        Assert.assertEquals(3, column.potentialSynapses.size)
+        Assert.assertEquals(3, column.connectedSynapses.size)
     }
 }

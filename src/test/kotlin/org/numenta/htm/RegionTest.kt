@@ -13,7 +13,7 @@ class RegionTest {
         val poolSize = 0.4
         val threshold = 0.5
         val initRange = 0.2
-        val connectedSize = (inputSize * poolSize).toInt()
+        val potentialSynapsesSize = (inputSize * poolSize).toInt()
 
         val region = Region(regionSize, inputSize) {
             spatialPooling {
@@ -26,7 +26,7 @@ class RegionTest {
 
         assertEquals(regionSize, region.field.columns.size)
         region.field.columns.forEach {
-            assertEquals(connectedSize, it.connectedSynapses.size)
+            assertEquals(potentialSynapsesSize, it.potentialSynapses.size)
             val downBound = threshold - initRange / 2.0
             val upperBound = threshold + initRange / 2.0
             it.connectedSynapses.forEach{

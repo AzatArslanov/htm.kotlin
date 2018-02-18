@@ -10,13 +10,13 @@ class SpatialPooling(private val field: Field) {
     var inhibitionRadius = 0
     var desiredLocalActivity = 0.3
 
-    fun calcOverlap(input: Input) {
+    fun overlap(input: Input) {
         field.columns.forEach {
-            it.calcOverlap(input, minOverlap)
+            it.overlap(input, minOverlap)
         }
     }
 
-    fun doInhibition() {
+    fun inhibition() {
         activeColumns.clear()
         field.columns.forEach {
             val neighbors = field.calculateNeighbors(it, inhibitionRadius)
