@@ -9,6 +9,7 @@ class Column {
     private var connectedPermThreshold = 0.0
 
     var boost: Int = 1
+     set(value) = if (value < 1) throw IllegalStateException("boost must be more then 1") else field = value
     var overlap: Int = 0
         private set
 
@@ -24,6 +25,27 @@ class Column {
             synapses.add(Synapse(permanence, it))
         }
     }
+
+    fun boostFunction(minDutyCycle: Double) {
+        if (activeDutyCycle() > minDutyCycle) {
+            boost = 1
+        } else {
+            boost += 1
+        }
+    }
+
+    fun increasePermanence(minDutyCycle: Double, increment: Double) {
+        if (overlapDutyCycle() < minDutyCycle) {
+            synapses.forEach {
+                it.permanence += increment
+                it.permanence = Math.min(1.0, it.permanence)
+            }
+        }
+    }
+
+    fun activeDutyCycle(): Double = activeStates.rate()
+
+    fun overlapDutyCycle(): Double = overlapStates.rate()
 
     fun overlap(input: Input, minOverlap: Int) {
         overlap = 0

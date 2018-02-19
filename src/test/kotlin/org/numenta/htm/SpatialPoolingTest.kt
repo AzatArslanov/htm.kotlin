@@ -1,5 +1,6 @@
 package org.numenta.htm
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
@@ -62,6 +63,41 @@ class SpatialPoolingTest {
 
         spatialPooling.inhibition()
         assertTrue(spatialPooling.activeColumns[0] == c1)
+    }
+
+    @Test
+    fun learning() {
+        val c1 = Column().apply {
+            boost = 2
+            connectToInputField(listOf(1), 0.0, 0.0)
+            overlap(Input(intArrayOf(1)), 0)
+        }
+        val c2 = Column().apply {
+            boost = 2
+            connectToInputField(listOf(2), 0.0, 0.0)
+            overlap(Input(intArrayOf(2)), 0)
+        }
+        val field = mock(Field::class.java)
+        val spatialPooling = SpatialPooling(field).apply {
+            desiredLocalActivity = 1.0
+            permanenceInc = 0.5
+            permanenceDec = 0.5
+        }
+        `when`(field.columns).thenReturn(listOf(c1,c2))
+        `when`(field.calculateNeighbors(c1, spatialPooling.inhibitionRadius)).thenReturn(listOf(c2))
+        `when`(field.calculateNeighbors(c2, spatialPooling.inhibitionRadius)).thenReturn(listOf(c1))
+
+        spatialPooling.inhibition()
+        spatialPooling.learning(Input(intArrayOf(1,2)))
+
+        assertEquals(0.5, c1.potentialSynapses[0].permanence, 0.0)
+        assertEquals(0.5, c2.potentialSynapses[0].permanence, 0.0)
+
+        assertEquals(1, c1.boost)
+        assertEquals(1, c2.boost)
+
+        assertEquals(1, spatialPooling.inhibitionRadius)
+
     }
 
     private fun <T> any(): T {
