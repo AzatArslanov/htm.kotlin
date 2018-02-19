@@ -14,4 +14,7 @@ class StateRingBuffer(private val size: Int) {
     }
 
     fun countActiveState(): Int = states.count { it }
+
+    fun rate(): Double = countActiveState().toDouble() / states.size.toDouble()
+
 }

@@ -14,7 +14,18 @@ class StateRingBufferTest {
             addState(true)
             addState(false)
         }
-        assertTrue(buffer.countActiveState() == 1)
+        assertEquals(1, buffer.countActiveState())
 
+    }
+
+    @Test
+    fun rate() {
+        val buffer = StateRingBuffer(4).apply {
+            addState(false)
+            addState(true)
+            addState(false)
+            addState(false)
+        }
+        assertEquals(0.25, buffer.rate(), 0.0)
     }
 }
