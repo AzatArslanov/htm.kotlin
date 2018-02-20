@@ -8,6 +8,7 @@ class RegionTest {
 
     @Test
     fun initialization() {
+        val cellsPerColumn = 4
         val regionSize = 10
         val inputSize = 5
         val poolSize = 0.4
@@ -15,7 +16,8 @@ class RegionTest {
         val initRange = 0.2
         val potentialSynapsesSize = (inputSize * poolSize).toInt()
 
-        val region = Region(regionSize, inputSize) {
+        val region = Region(regionSize, inputSize, cellsPerColumn) {
+
             spatialPooling {
                 potentialPoolSize = poolSize
                 connectedPermThreshold = threshold
@@ -33,6 +35,7 @@ class RegionTest {
                 assertTrue(it.permanence >= downBound)
                 assertTrue(it.permanence < upperBound)
             }
+            assertEquals(cellsPerColumn, it.cells.size)
         }
     }
 }

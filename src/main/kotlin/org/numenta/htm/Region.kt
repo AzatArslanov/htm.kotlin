@@ -1,7 +1,7 @@
 package org.numenta.htm
 
-class Region(size: Int, inputSize: Int, init: Region.() -> Unit) {
-    val field = Field(size)
+class Region(size: Int, inputSize: Int, cellsPerColumn: Int, init: Region.() -> Unit) {
+    val field: Field = Field(size, cellsPerColumn)
 
     private var sp: SpatialPooling = SpatialPooling(field)
 

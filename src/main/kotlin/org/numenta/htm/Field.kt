@@ -4,7 +4,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class Field(size: Int) {
+class Field(size: Int, cellsPerColumn: Int = 0) {
     private val matrix: MutableList<MutableList<Column>>
     private val sideSize: Int = Math.sqrt(size.toDouble()).toInt()
     private val cache: MutableMap<Pair<Column, Int>, List<Column>> = HashMap()
@@ -18,7 +18,7 @@ class Field(size: Int) {
         for (i in 0 until sideSize) {
             val columns = ArrayList<Column>()
             for (j in 0 until sideSize) {
-                val column = Column()
+                val column = Column(cellsPerColumn)
                 columns.add(column)
                 list.add(column)
             }
@@ -28,7 +28,7 @@ class Field(size: Int) {
             val countToAdd = size - sideSize * sideSize
             val rowToAdd = ArrayList<Column>()
             for (i in 0 until countToAdd) {
-                val column = Column()
+                val column = Column(cellsPerColumn)
                 rowToAdd.add(column)
                 list.add(column)
             }

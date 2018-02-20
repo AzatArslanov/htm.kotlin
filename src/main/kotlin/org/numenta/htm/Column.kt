@@ -1,8 +1,17 @@
 package org.numenta.htm
 
 import java.util.*
+import kotlin.collections.ArrayList
 
-class Column {
+class Column(cellsPerColumn: Int = 0) {
+    val cells: MutableList<Cell> = ArrayList(cellsPerColumn)
+
+    init {
+        for (i in 0 until cellsPerColumn) {
+            cells.add(Cell())
+        }
+    }
+
     private val dutyCycleLength = 1000
     private val overlapStates = StateRingBuffer(dutyCycleLength)
     private val activeStates = StateRingBuffer(dutyCycleLength)
