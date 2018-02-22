@@ -6,19 +6,19 @@ import org.junit.Test
 class SegmentTest {
 
     @Test
-    fun copy() {
-        val cell = Cell()
-        val innerSynapse = InnerSynapse(0.0, cell)
-        val segment = Segment().apply { 
-            synapses.add(innerSynapse)
-        }
+    fun states() {
+        val permanence = 0.5
+        val segment = Segment(2, permanence - 0.1)
 
-        val twin = segment.copy()
+        assertFalse(segment.isSegmentActive)
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { activeState = true }))
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { activeState = true }))
+        assertTrue(segment.isSegmentActive)
 
-        assertNotEquals(System.identityHashCode(segment), System.identityHashCode(twin))
-        assertEquals(1, twin.synapses.size)
-        assertNotEquals(System.identityHashCode(innerSynapse), System.identityHashCode(twin.synapses[0]))
-        assertEquals(System.identityHashCode(cell), System.identityHashCode(twin.synapses[0].cell))
+        assertFalse(segment.isSegmentLearn)
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { learnState = true }))
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { learnState = true }))
+        assertTrue(segment.isSegmentLearn)
     }
 
 }

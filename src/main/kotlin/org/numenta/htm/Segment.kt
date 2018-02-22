@@ -1,13 +1,9 @@
 package org.numenta.htm
 
-class Segment {
+class Segment(private val activationThreshold: Int, private val connectedPerm: Double) {
     val synapses: MutableList<InnerSynapse> = ArrayList()
 
-    fun copy(): Segment {
-        val segment = Segment()
-        synapses.forEach {
-            segment.synapses.add(it.copy())
-        }
-        return segment
-    }
+    val isSegmentActive: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.activeState } >= activationThreshold
+
+    val isSegmentLearn: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.learnState } >= activationThreshold
 }
