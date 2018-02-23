@@ -6,4 +6,12 @@ class Segment(private val activationThreshold: Int, private val connectedPerm: D
     val isSegmentActive: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.activeState } >= activationThreshold
 
     val isSegmentLearn: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.learnState } >= activationThreshold
+
+    fun copy(): Segment {
+        val segment = Segment(this.activationThreshold, this.connectedPerm)
+        synapses.forEach {
+            segment.synapses.add(it.copy())
+        }
+        return segment
+    }
 }
