@@ -8,25 +8,25 @@ class CellTest {
     @Test
     fun predictiveState() {
         val cell = Cell()
-        assertEquals(false, cell.predictiveState)
-        assertEquals(false, cell.learnState)
-        assertEquals(false, cell.activeState)
+        assertEquals(false, cell.isPredictive)
+        assertEquals(false, cell.isLearn)
+        assertEquals(false, cell.isActive)
     }
 
     @Test
-    fun copy() {
+    fun copyWithoutSegments() {
         val cell = Cell(true, false, true).apply {
             segments.add(Segment(0, 0.0))
         }
         assertNull(cell.pastState)
-        val pastState = cell.saveState()
+        val pastState = cell.copyWithoutSegments()
         assertNotNull(cell.pastState)
 
-        assertTrue(pastState.predictiveState)
-        assertFalse(pastState.activeState)
-        assertTrue(pastState.learnState)
+        assertTrue(pastState.isPredictive)
+        assertFalse(pastState.isActive)
+        assertTrue(pastState.isLearn)
 
-        assertEquals(1, pastState.segments.size)
+        assertEquals(0, pastState.segments.size)
         assertNotEquals(System.identityHashCode(cell.segments), System.identityHashCode(pastState.segments))
 
     }

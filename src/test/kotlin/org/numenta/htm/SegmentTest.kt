@@ -11,13 +11,13 @@ class SegmentTest {
         val segment = Segment(2, permanence - 0.1)
 
         assertFalse(segment.isSegmentActive)
-        segment.synapses.add(InnerSynapse(permanence, Cell().apply { activeState = true }))
-        segment.synapses.add(InnerSynapse(permanence, Cell().apply { activeState = true }))
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { isActive = true }))
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { isActive = true }))
         assertTrue(segment.isSegmentActive)
 
         assertFalse(segment.isSegmentLearn)
-        segment.synapses.add(InnerSynapse(permanence, Cell().apply { learnState = true }))
-        segment.synapses.add(InnerSynapse(permanence, Cell().apply { learnState = true }))
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { isLearn = true }))
+        segment.synapses.add(InnerSynapse(permanence, Cell().apply { isLearn = true }))
         assertTrue(segment.isSegmentLearn)
     }
 
