@@ -16,10 +16,8 @@ class TemporalPooling(val field: Field) {
                 cell.segments.forEach {
                     val segment = Segment(it.activationThreshold, it.connectedPerm)
                     it.synapses.forEach {
-                        val pastState = it.cell.pastState
-                        if (pastState != null) {
-                            segment.synapses.add(InnerSynapse(it.permanence, pastState))
-                        }
+                        segment.synapses.add(InnerSynapse(it.permanence, it.cell.pastState
+                                ?: throw IllegalStateException()))
                     }
                     segments.add(segment)
                 }
