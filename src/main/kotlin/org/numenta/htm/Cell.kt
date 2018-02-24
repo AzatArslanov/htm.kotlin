@@ -1,6 +1,6 @@
 package org.numenta.htm
 
-class Cell(var isPredictive:Boolean = false, var isActive:Boolean = false, var isLearn:Boolean = false) {
+class Cell(var isPredictive: Boolean = false, var isActive: Boolean = false, var isLearn: Boolean = false) {
 
     val segments: MutableList<Segment> = ArrayList()
 
@@ -12,4 +12,9 @@ class Cell(var isPredictive:Boolean = false, var isActive:Boolean = false, var i
         pastState = cell
         return cell
     }
+
+    fun getActiveSegment(): Segment {
+        return segments.find { it.isSegmentActive && it.isSequenceSegment } ?: (segments.maxBy { it.activity } ?: throw IllegalStateException())
+    }
+
 }

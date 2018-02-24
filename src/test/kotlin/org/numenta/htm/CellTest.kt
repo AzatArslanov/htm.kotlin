@@ -28,6 +28,34 @@ class CellTest {
 
         assertEquals(0, pastState.segments.size)
         assertNotEquals(System.identityHashCode(cell.segments), System.identityHashCode(pastState.segments))
-
     }
+
+    @Test(expected = IllegalStateException::class)
+    fun getActiveSegmentThrowIllegalStateException() {
+        val cell = Cell()
+        cell.getActiveSegment()
+    }
+
+    @Test
+    fun getActiveSegment() {
+        val segmentOne = Segment(1, 0.4).apply {
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+        }
+        val segmentTwo = Segment(1, 0.4).apply {
+            isSequenceSegment = true
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+        }
+        val cell = Cell().apply {
+            segments.add(segmentOne)
+            segments.add(segmentTwo)
+        }
+        assertEquals(segmentTwo, cell.getActiveSegment())
+
+        segmentTwo.isSequenceSegment = false
+
+        assertEquals(segmentOne, cell.getActiveSegment())
+    }
+
+
 }
