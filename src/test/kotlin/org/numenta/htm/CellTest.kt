@@ -57,5 +57,28 @@ class CellTest {
         assertEquals(segmentOne, cell.getActiveSegment())
     }
 
+    @Test
+    fun getBestMatchingSegment() {
+
+        val segmentOne = Segment(1, 0.4).apply {
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+        }
+        val segmentTwo = Segment(1, 0.4).apply {
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+            synapses.add(InnerSynapse(0.5, Cell(isActive = true)))
+        }
+        val cell = Cell().apply {
+            segments.add(segmentOne)
+            segments.add(segmentTwo)
+        }
+
+        assertEquals(segmentTwo, cell.getBestMatchingSegment(1))
+
+        assertNull(cell.getBestMatchingSegment(4))
+
+    }
+
 
 }

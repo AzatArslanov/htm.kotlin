@@ -7,7 +7,9 @@ class Segment(val activationThreshold: Int, val connectedPerm: Double) {
 
     val isSegmentActive: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.isActive } >= activationThreshold
 
-    val activity: Int get() = synapses.count { it.permanence >= connectedPerm && it.cell.isActive }
+    val realActivity: Int get() = synapses.count { it.permanence >= connectedPerm && it.cell.isActive }
+
+    val activity: Int get() = synapses.count { it.cell.isActive }
 
     val isSegmentLearn: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.isLearn } >= activationThreshold
 }
