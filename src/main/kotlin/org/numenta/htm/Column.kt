@@ -18,7 +18,7 @@ class Column(cellsPerColumn: Int = 0) {
     private var connectedPermThreshold = 0.0
 
     var boost: Int = 1
-     set(value) = if (value < 1) throw IllegalStateException("boost must be more then 1") else field = value
+        set(value) = if (value < 1) throw IllegalArgumentException("boost must be more then 1") else field = value
     var overlap: Int = 0
         private set
 
@@ -26,7 +26,8 @@ class Column(cellsPerColumn: Int = 0) {
     val connectedSynapses: List<Synapse> get() = synapses.filter { it.permanence >= connectedPermThreshold }
     val potentialSynapses: List<Synapse> get() = Collections.unmodifiableList(synapses)
 
-    fun getBestMatchingCell(minThreshold: Int): Cell = cells.find { it.getBestMatchingSegment(minThreshold) != null } ?: (cells.minBy { it.segments.size } ?: throw IllegalStateException())
+    fun getBestMatchingCell(minThreshold: Int): Cell = cells.find { it.getBestMatchingSegment(minThreshold) != null }
+            ?: (cells.minBy { it.segments.size } ?: throw IllegalStateException())
 
     fun connectToInputField(inputs: List<Int>, connectedPermThreshold: Double, connectedPermInitialRange: Double) {
         this.connectedPermThreshold = connectedPermThreshold
