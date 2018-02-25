@@ -26,6 +26,8 @@ class Column(cellsPerColumn: Int = 0) {
     val connectedSynapses: List<Synapse> get() = synapses.filter { it.permanence >= connectedPermThreshold }
     val potentialSynapses: List<Synapse> get() = Collections.unmodifiableList(synapses)
 
+    fun getBestMatchingCell(minThreshold: Int): Cell = cells.find { it.getBestMatchingSegment(minThreshold) != null } ?: (cells.minBy { it.segments.size } ?: throw IllegalStateException())
+
     fun connectToInputField(inputs: List<Int>, connectedPermThreshold: Double, connectedPermInitialRange: Double) {
         this.connectedPermThreshold = connectedPermThreshold
         inputs.forEach {
