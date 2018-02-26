@@ -7,10 +7,29 @@ class CellTest {
 
     @Test
     fun predictiveState() {
-        val cell = Cell()
+        val cell = Cell(true, true, true)
+        assertEquals(true, cell.isPredictive)
+        assertEquals(true, cell.isActive)
+        assertEquals(true, cell.isLearn)
+
+        assertEquals(false, cell.isPastPredictive)
+        assertEquals(false, cell.isPastActive)
+        assertEquals(false, cell.isPastLearn)
+
+        cell.apply {
+            isPredictive = false
+            isActive = false
+            isLearn = false
+        }
+
         assertEquals(false, cell.isPredictive)
-        assertEquals(false, cell.isLearn)
         assertEquals(false, cell.isActive)
+        assertEquals(false, cell.isLearn)
+
+        assertEquals(true, cell.isPastPredictive)
+        assertEquals(true, cell.isPastActive)
+        assertEquals(true, cell.isPastLearn)
+
     }
 
 
