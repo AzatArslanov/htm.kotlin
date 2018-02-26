@@ -1,33 +1,36 @@
 package org.numenta.htm
 
+enum class Time {NOW, PAST}
+
 class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Boolean = false) {
-    var isPredictive: Boolean = isPredictive
+    var isNowPredictive: Boolean = isPredictive
         set(value) {
-            isPastPredictive = isPredictive
+            isPastPredictive = isNowPredictive
             field = value
         }
-    var isActive: Boolean = isActive
+    var isNowActive: Boolean = isActive
         set(value) {
-            isPastActive = isActive
+            isPastActive = isNowActive
             field = value
         }
-    var isLearn: Boolean = isLearn
+    var isNowLearn: Boolean = isLearn
         set(value) {
-            isPastLearn = isLearn
+            isPastLearn = isNowLearn
             field = value
         }
 
-    var isPastPredictive: Boolean = false
-        private set
-    var isPastActive: Boolean = false
-        private set
-    var isPastLearn: Boolean = false
-        private set
+    private var isPastPredictive: Boolean = false
+    private var isPastActive: Boolean = false
+    private var isPastLearn: Boolean = false
+
+    fun isActive(time: Time):Boolean = if (time == Time.NOW) isNowActive else isPastActive
+    fun isLearn(time: Time): Boolean = if (time == Time.NOW) isNowLearn else isPastLearn
+    fun isPredictive(time: Time): Boolean = if (time == Time.NOW) isNowPredictive else isPastPredictive
 
     val segments: MutableList<Segment> = ArrayList()
 
-    fun getActiveSegment(): Segment = segments.find { it.isSegmentActive && it.isSequenceSegment }
-            ?: (segments.maxBy { it.realActivity } ?: throw IllegalStateException())
+    fun getActiveSegment(time: Time): Segment = segments.find { it.isSegmentActive(time) && it.isSequenceSegment }
+            ?: (segments.maxBy { it.realActivity(time) } ?: throw IllegalStateException())
 
 
     fun getBestMatchingSegment(minThreshold: Int): Segment? = segments.filter { it.activity >= minThreshold }.maxBy { it.activity }

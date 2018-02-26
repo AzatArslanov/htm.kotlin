@@ -5,11 +5,11 @@ class Segment(val activationThreshold: Int, val connectedPerm: Double) {
 
     val synapses: MutableList<InnerSynapse> = ArrayList()
 
-    val isSegmentActive: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.isActive } >= activationThreshold
+    fun isSegmentActive(time: Time): Boolean = synapses.count { it.permanence >= connectedPerm && it.cell.isActive(time) } >= activationThreshold
 
-    val realActivity: Int get() = synapses.count { it.permanence >= connectedPerm && it.cell.isActive }
+    fun realActivity(time: Time): Int = synapses.count { it.permanence >= connectedPerm && it.cell.isActive(time) }
 
-    val activity: Int get() = synapses.count { it.cell.isActive }
+    val activity: Int get() = synapses.count { it.cell.isNowActive }
 
-    val isSegmentLearn: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.isLearn } >= activationThreshold
+    val isSegmentLearn: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.isNowLearn } >= activationThreshold
 }
