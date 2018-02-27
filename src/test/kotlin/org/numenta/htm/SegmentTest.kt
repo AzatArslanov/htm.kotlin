@@ -15,10 +15,10 @@ class SegmentTest {
         segment.synapses.add(InnerSynapse(permanence, Cell().apply { isNowActive = true }))
         assertTrue(segment.isSegmentActive(Time.NOW))
 
-        assertFalse(segment.isSegmentLearn)
+        assertFalse(segment.isSegmentLearn(Time.NOW))
         segment.synapses.add(InnerSynapse(permanence, Cell().apply { isNowLearn = true }))
         segment.synapses.add(InnerSynapse(permanence, Cell().apply { isNowLearn = true }))
-        assertTrue(segment.isSegmentLearn)
+        assertTrue(segment.isSegmentLearn(Time.NOW))
     }
 
 }

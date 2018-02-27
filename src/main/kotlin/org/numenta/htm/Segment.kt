@@ -1,6 +1,6 @@
 package org.numenta.htm
 
-class Segment(val activationThreshold: Int, val connectedPerm: Double) {
+class Segment(private val activationThreshold: Int, private val connectedPerm: Double) {
     var isSequenceSegment = false
 
     val synapses: MutableList<InnerSynapse> = ArrayList()
@@ -11,5 +11,5 @@ class Segment(val activationThreshold: Int, val connectedPerm: Double) {
 
     val activity: Int get() = synapses.count { it.cell.isNowActive }
 
-    val isSegmentLearn: Boolean get() = synapses.count { it.permanence >= connectedPerm && it.cell.isNowLearn } >= activationThreshold
+    fun isSegmentLearn(time: Time): Boolean = synapses.count { it.permanence >= connectedPerm && it.cell.isLearn(time) } >= activationThreshold
 }
