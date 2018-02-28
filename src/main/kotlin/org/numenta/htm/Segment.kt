@@ -9,7 +9,7 @@ class Segment(private val activationThreshold: Int, private val connectedPerm: D
 
     fun realActivity(time: Time): Int = synapses.count { it.permanence >= connectedPerm && it.cell.isActive(time) }
 
-    val activity: Int get() = synapses.count { it.cell.isNowActive }
+    fun activity(time: Time): Int = synapses.count { it.cell.isActive(time) }
 
     fun isSegmentLearn(time: Time): Boolean = synapses.count { it.permanence >= connectedPerm && it.cell.isLearn(time) } >= activationThreshold
 }

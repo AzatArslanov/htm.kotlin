@@ -77,9 +77,9 @@ class CellTest {
             segments.add(segmentTwo)
         }
 
-        assertEquals(segmentTwo, cell.getBestMatchingSegment(1))
+        assertEquals(segmentTwo, cell.getBestMatchingSegment(Time.NOW, 1))
 
-        assertNull(cell.getBestMatchingSegment(4))
+        assertNull(cell.getBestMatchingSegment(Time.NOW,4))
 
     }
 

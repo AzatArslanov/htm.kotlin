@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito.*
 
-internal class ColumnTest {
+internal class ColumnTest: MockitoTest() {
 
     @Test
     fun overlap() {
@@ -35,7 +35,7 @@ internal class ColumnTest {
     @Test
     fun getBestMatchingCell() {
         val one = mock(Cell::class.java)
-        `when`(one.getBestMatchingSegment(anyInt())).thenReturn(Segment(0, 0.0))
+        `when`(one.getBestMatchingSegment(any(), anyInt())).thenReturn(Segment(0, 0.0))
         val two = Cell().apply {
             segments.add(Segment(0, 0.0))
             segments.add(Segment(0, 0.0))
@@ -49,13 +49,13 @@ internal class ColumnTest {
             cells.add(one)
             cells.add(two)
         }
-        assertEquals(one, column.getBestMatchingCell(0))
+        assertEquals(one, column.getBestMatchingCell(Time.NOW,0))
 
         column.apply {
             cells.clear()
             cells.add(two)
             cells.add(three)
         }
-        assertEquals(two, column.getBestMatchingCell(0))
+        assertEquals(two, column.getBestMatchingCell(Time.NOW,0))
     }
 }

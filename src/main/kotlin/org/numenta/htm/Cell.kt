@@ -33,6 +33,6 @@ class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Bool
             ?: (segments.maxBy { it.realActivity(time) } ?: throw IllegalStateException())
 
 
-    fun getBestMatchingSegment(minThreshold: Int): Segment? = segments.filter { it.activity >= minThreshold }.maxBy { it.activity }
+    fun getBestMatchingSegment(time: Time, minThreshold: Int): Segment? = segments.filter { it.activity(time) >= minThreshold }.maxBy { it.activity(time) }
 
 }
