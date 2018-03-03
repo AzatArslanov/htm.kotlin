@@ -37,6 +37,10 @@ class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Bool
 
     fun getBestMatchingSegment(time: Time, minThreshold: Int): Segment? = segments.filter { it.activity(time) >= minThreshold }.maxBy { it.activity(time) }
 
-    class Update(val sequenceSegment: Boolean, val segment: Segment, val synapses: List<InnerSynapse>)
+    class Update(val segment: Segment) {
+        val adaptSynapses = ArrayList<InnerSynapse>()
+        val newSynapses = ArrayList<InnerSynapse>()
+        var sequenceSegment: Boolean = false
+    }
 
 }

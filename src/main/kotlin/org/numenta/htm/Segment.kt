@@ -5,6 +5,8 @@ class Segment(private val activationThreshold: Int, private val connectedPerm: D
 
     val synapses: MutableList<InnerSynapse> = ArrayList()
 
+    fun getActiveSynapses(time: Time): List<InnerSynapse> = synapses.filter { it.cell.isActive(time) }
+
     fun isSegmentActive(time: Time): Boolean = synapses.count { it.permanence >= connectedPerm && it.cell.isActive(time) } >= activationThreshold
 
     fun realActivity(time: Time): Int = synapses.count { it.permanence >= connectedPerm && it.cell.isActive(time) }
