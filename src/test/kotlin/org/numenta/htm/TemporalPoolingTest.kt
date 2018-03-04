@@ -3,18 +3,18 @@ package org.numenta.htm
 import org.junit.Test
 
 import org.junit.Assert.*
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
+import org.mockito.Mockito.`when` as once
 
 class TemporalPoolingTest {
 
     @Test
     fun getLearnCells() {
         val cell = Cell(false, false, true)
-        val column = Mockito.mock(Column::class.java)
-        `when`(column.cells).thenReturn(listOf(cell).toMutableList())
-        val field = Mockito.mock(Field::class.java)
-        `when`(field.columns).thenReturn(listOf(column))
+        val column = mock(Column::class.java)
+        once(column.cells).thenReturn(listOf(cell).toMutableList())
+        val field = mock(Field::class.java)
+        once(field.columns).thenReturn(listOf(column))
 
         val temporalPooling = TemporalPooling(field)
         assertEquals(cell, temporalPooling.getLearnCells(Time.NOW)[0])
@@ -24,10 +24,10 @@ class TemporalPoolingTest {
     @Test
     fun getSegmentActiveSynapses() {
         val cell = Cell(false, false, true)
-        val column = Mockito.mock(Column::class.java)
-        `when`(column.cells).thenReturn(listOf(cell).toMutableList())
-        val field = Mockito.mock(Field::class.java)
-        `when`(field.columns).thenReturn(listOf(column))
+        val column = mock(Column::class.java)
+        once(column.cells).thenReturn(listOf(cell).toMutableList())
+        val field = mock(Field::class.java)
+        once(field.columns).thenReturn(listOf(column))
 
         val temporalPooling = TemporalPooling(field).apply {
             newSynapsesCount = 10
@@ -43,5 +43,25 @@ class TemporalPoolingTest {
         assertEquals(2, toUpdate.adaptSynapses.size)
         assertEquals(1, toUpdate.newSynapses.size)
 
+    }
+
+    @Test
+    fun process() {
+        val field = mock(Field::class.java)
+        val temporalPooling = TemporalPooling(field)
+
+        val activeColumn = mock(Column::class.java)
+        val cell = mock(Cell::class.java)
+        val segment = mock(Segment::class.java)
+        once(segment.isSequenceSegment).thenReturn(true)
+        once(segment.isSegmentLearn(Time.PAST)).thenReturn(true)
+        once(cell.isPredictive(Time.PAST)).thenReturn(true)
+        once(cell.getActiveSegment(Time.PAST)).thenReturn(segment)
+        once(activeColumn.cells).thenReturn(listOf(cell).toMutableList())
+
+        temporalPooling.process(listOf(activeColumn))
+
+        verify(cell, times(1)).isNowActive = true
+        verify(cell, times(1)).isNowLearn = true
     }
 }

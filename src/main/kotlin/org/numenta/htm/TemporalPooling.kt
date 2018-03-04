@@ -3,6 +3,7 @@ package org.numenta.htm
 
 class TemporalPooling(val field: Field) {
     var activationThreshold = 0
+    var minThreshold = 0
     var connectedPerm = 0.0
     var newSynapsesCount = 0
     var initialPerm = 0.0
@@ -32,6 +33,42 @@ class TemporalPooling(val field: Field) {
             }
         }
         return toUpdate
+    }
+
+    fun process(activeColumns: List<Column>) {
+        activeColumns.forEach { column ->
+            var buPredicted = false
+            var lcChosen = false
+            column.cells.forEach {cell ->
+                if (cell.isPredictive(Time.PAST)) {
+                    val activeSegment = cell.getActiveSegment(Time.PAST)
+                    if (activeSegment.isSequenceSegment) {
+                        buPredicted = true
+                        cell.isNowActive = true
+                        if (activeSegment.isSegmentLearn(Time.PAST)) {
+                            lcChosen = true
+                            cell.isNowLearn = true
+                        }
+                    }
+                }
+            }
+
+            if (!buPredicted) {
+                column.cells.forEach {
+                    it.isNowActive = true
+                }
+            }
+
+            if (!lcChosen) {
+                val cell = column.getBestMatchingCell(Time.PAST, minThreshold)
+                cell.isNowLearn = true
+                val update = getSegmentActiveSynapses(Time.PAST, true, null)
+                update.isSequenceSegment = true
+                cell.toUpdate = update
+            }
+        }
+
+
     }
 }
 

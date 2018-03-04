@@ -40,7 +40,7 @@ class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Bool
     class Update(val segment: Segment) {
         val adaptSynapses = ArrayList<InnerSynapse>()
         val newSynapses = ArrayList<InnerSynapse>()
-        var sequenceSegment: Boolean = false
+        var isSequenceSegment: Boolean = false
     }
 
 }
