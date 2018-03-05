@@ -1,12 +1,11 @@
 package org.numenta.htm
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.mockito.Mockito.*
 import org.mockito.Mockito.`when` as once
 
-class TemporalPoolingTest {
+class TemporalPoolingTest : MockitoTest() {
 
     @Test
     fun getLearnCells() {
@@ -48,7 +47,10 @@ class TemporalPoolingTest {
     @Test
     fun process() {
         val field = mock(Field::class.java)
-        val temporalPooling = TemporalPooling(field)
+
+        val temporalPooling = TemporalPooling(field).apply {
+            minThreshold = 10
+        }
 
         val activeColumn = mock(Column::class.java)
         val cell = mock(Cell::class.java)
@@ -63,5 +65,17 @@ class TemporalPoolingTest {
 
         verify(cell, times(1)).isNowActive = true
         verify(cell, times(1)).isNowLearn = true
+
+        reset(segment)
+        reset(cell)
+
+        once(segment.isSequenceSegment).thenReturn(false)
+        once(activeColumn.getBestMatchingCell(Time.PAST, 10)).thenReturn(cell)
+
+        temporalPooling.process(listOf(activeColumn))
+        verify(cell, times(1)).isNowActive = true
+        verify(cell, times(1)).isNowLearn = true
+        verify(cell, times(1)).toUpdate = any()
+
     }
 }
