@@ -8,23 +8,20 @@ class CellTest {
     @Test
     fun predictiveState() {
         val cell = Cell(true, true, true)
-        assertEquals(true, cell.isNowPredictive)
-        assertEquals(true, cell.isNowActive)
-        assertEquals(true, cell.isNowLearn)
+        assertEquals(true, cell.isPredictive(Time.NOW))
+        assertEquals(true, cell.isActive(Time.NOW))
+        assertEquals(true, cell.isLearn(Time.NOW))
 
         assertEquals(false, cell.isPredictive(Time.PAST))
         assertEquals(false, cell.isActive(Time.PAST))
         assertEquals(false, cell.isLearn(Time.PAST))
 
-        cell.apply {
-            isNowPredictive = false
-            isNowActive = false
-            isNowLearn = false
-        }
+        cell.fixStates()
 
-        assertEquals(false, cell.isNowPredictive)
-        assertEquals(false, cell.isNowActive)
-        assertEquals(false, cell.isNowLearn)
+
+        assertEquals(false, cell.isPredictive(Time.NOW))
+        assertEquals(false, cell.isActive(Time.NOW))
+        assertEquals(false, cell.isLearn(Time.NOW))
 
         assertEquals(true, cell.isPredictive(Time.PAST))
         assertEquals(true, cell.isActive(Time.PAST))

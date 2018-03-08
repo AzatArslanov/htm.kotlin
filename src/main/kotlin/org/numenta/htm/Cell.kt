@@ -3,18 +3,18 @@ package org.numenta.htm
 enum class Time {NOW, PAST}
 
 class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Boolean = false) {
-    var isNowPredictive: Boolean = isPredictive
-        set(value) {
+    private var isNowPredictive: Boolean = isPredictive
+        private set(value) {
             isPastPredictive = isNowPredictive
             field = value
         }
-    var isNowActive: Boolean = isActive
-        set(value) {
+    private var isNowActive: Boolean = isActive
+        private set(value) {
             isPastActive = isNowActive
             field = value
         }
-    var isNowLearn: Boolean = isLearn
-        set(value) {
+    private var isNowLearn: Boolean = isLearn
+        private set(value) {
             isPastLearn = isNowLearn
             field = value
         }
@@ -24,6 +24,19 @@ class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Bool
     private var isPastPredictive: Boolean = false
     private var isPastActive: Boolean = false
     private var isPastLearn: Boolean = false
+
+    private val lazyStates = HashSet<States>()
+
+    fun addState(state: States) {
+        lazyStates.add(state)
+    }
+
+    fun fixStates() {
+        isNowPredictive = lazyStates.contains(States.PREDICTIVE)
+        isNowLearn = lazyStates.contains(States.LEARN)
+        isNowActive = lazyStates.contains(States.ACTIVE)
+        lazyStates.clear()
+    }
 
     fun isActive(time: Time): Boolean = if (time == Time.NOW) isNowActive else isPastActive
     fun isLearn(time: Time): Boolean = if (time == Time.NOW) isNowLearn else isPastLearn
@@ -42,5 +55,7 @@ class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Bool
         val newSynapses = ArrayList<InnerSynapse>()
         var isSequenceSegment: Boolean = false
     }
+
+    enum class States {PREDICTIVE, ACTIVE, LEARN}
 
 }

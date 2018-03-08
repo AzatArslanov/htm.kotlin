@@ -33,8 +33,14 @@ class TemporalPoolingTest : MockitoTest() {
         }
         val permanence = 0.0
         val segment = Segment(0, permanence).apply {
-            synapses.add(InnerSynapse(permanence, Cell().apply { isNowActive = true }))
-            synapses.add(InnerSynapse(permanence, Cell().apply { isNowActive = true }))
+            synapses.add(InnerSynapse(permanence, Cell().apply {
+                addState(Cell.States.ACTIVE)
+                fixStates()
+            }))
+            synapses.add(InnerSynapse(permanence, Cell().apply {
+                addState(Cell.States.ACTIVE)
+                fixStates()
+            }))
         }
 
         val toUpdate = temporalPooling.getSegmentActiveSynapses(Time.NOW, true, segment)
@@ -47,11 +53,6 @@ class TemporalPoolingTest : MockitoTest() {
     @Test
     fun process() {
         val field = mock(Field::class.java)
-
-        val temporalPooling = TemporalPooling(field).apply {
-            minThreshold = 10
-        }
-
         val activeColumn = mock(Column::class.java)
         val cell = mock(Cell::class.java)
         val segment = mock(Segment::class.java)
@@ -60,11 +61,17 @@ class TemporalPoolingTest : MockitoTest() {
         once(cell.isPredictive(Time.PAST)).thenReturn(true)
         once(cell.getActiveSegment(Time.PAST)).thenReturn(segment)
         once(activeColumn.cells).thenReturn(listOf(cell).toMutableList())
+        once(field.columns).thenReturn(listOf(activeColumn).toMutableList())
+
+        val temporalPooling = TemporalPooling(field).apply {
+            minThreshold = 10
+        }
 
         temporalPooling.process(listOf(activeColumn))
 
-        verify(cell, times(1)).isNowActive = true
-        verify(cell, times(1)).isNowLearn = true
+        verify(cell, times(1)).addState(Cell.States.ACTIVE)
+        verify(cell, times(1)).addState(Cell.States.LEARN)
+        verify(cell, times(1)).fixStates()
 
         reset(segment)
         reset(cell)
@@ -73,8 +80,9 @@ class TemporalPoolingTest : MockitoTest() {
         once(activeColumn.getBestMatchingCell(Time.PAST, 10)).thenReturn(cell)
 
         temporalPooling.process(listOf(activeColumn))
-        verify(cell, times(1)).isNowActive = true
-        verify(cell, times(1)).isNowLearn = true
+        verify(cell, times(1)).addState(Cell.States.ACTIVE)
+        verify(cell, times(1)).addState(Cell.States.LEARN)
+        verify(cell, times(1)).fixStates()
         verify(cell, times(1)).toUpdate = any()
 
     }

@@ -8,12 +8,6 @@ class TemporalPooling(val field: Field) {
     var newSynapsesCount = 0
     var initialPerm = 0.0
 
-    private val toFixState = ArrayList<FixState>()
-
-    private class FixState(val cell: Cell, val state: State) {
-        enum class State {ACTIVE, LEARN, PREDICT}
-    }
-
 
     fun getLearnCells(time: Time):List<Cell> {
         val result = ArrayList<Cell>()
@@ -39,17 +33,6 @@ class TemporalPooling(val field: Field) {
         return toUpdate
     }
 
-    private fun fixStates() {
-        toFixState.forEach {
-            when (it.state) {
-                FixState.State.ACTIVE -> it.cell.isNowActive = true
-                FixState.State.LEARN -> it.cell.isNowLearn = true
-                FixState.State.PREDICT -> it.cell.isNowPredictive = true
-            }
-        }
-        toFixState.clear()
-    }
-
     fun process(activeColumns: List<Column>) {
         activeColumns.forEach { column ->
             var buPredicted = false
@@ -59,10 +42,10 @@ class TemporalPooling(val field: Field) {
                     val activeSegment = cell.getActiveSegment(Time.PAST)
                     if (activeSegment.isSequenceSegment) {
                         buPredicted = true
-                        toFixState.add(FixState(cell, FixState.State.ACTIVE))
+                        cell.addState(Cell.States.ACTIVE)
                         if (activeSegment.isSegmentLearn(Time.PAST)) {
                             lcChosen = true
-                            toFixState.add(FixState(cell, FixState.State.LEARN))
+                            cell.addState(Cell.States.LEARN)
                         }
                     }
                 }
@@ -70,19 +53,27 @@ class TemporalPooling(val field: Field) {
 
             if (!buPredicted) {
                 column.cells.forEach {
-                    toFixState.add(FixState(it, FixState.State.ACTIVE))
+                    it.addState(Cell.States.ACTIVE)
                 }
             }
 
             if (!lcChosen) {
                 val cell = column.getBestMatchingCell(Time.PAST, minThreshold)
-                toFixState.add(FixState(cell, FixState.State.LEARN))
+                cell.addState(Cell.States.LEARN)
                 val update = getSegmentActiveSynapses(Time.PAST, true, null)
                 update.isSequenceSegment = true
                 cell.toUpdate = update
             }
         }
         fixStates()
+    }
+
+    private fun fixStates() {
+        field.columns.forEach {
+            it.cells.forEach {
+                it.fixStates()
+            }
+        }
     }
 }
 
