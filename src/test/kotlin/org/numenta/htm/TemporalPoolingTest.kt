@@ -33,12 +33,8 @@ class TemporalPoolingTest : MockitoTest() {
         }
         val permanence = 0.0
         val segment = Segment(0, permanence).apply {
-            synapses.add(InnerSynapse(permanence, Cell().apply {
-                isActive = true
-            }))
-            synapses.add(InnerSynapse(permanence, Cell().apply {
-                isActive = true
-            }))
+            synapses.add(InnerSynapse(permanence, Cell(isActive = true)))
+            synapses.add(InnerSynapse(permanence, Cell(isActive = true)))
         }
 
         val toUpdate = temporalPooling.getSegmentActiveSynapses(Time.NOW, true, segment)
