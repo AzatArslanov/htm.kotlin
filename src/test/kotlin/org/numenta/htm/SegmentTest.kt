@@ -12,22 +12,19 @@ class SegmentTest {
 
         assertFalse(segment.isSegmentActive(Time.NOW))
         segment.synapses.add(InnerSynapse(permanence, Cell().apply {
-            addState(Cell.States.ACTIVE)
-            fixStates()
+            isActive = true
         }))
         segment.synapses.add(InnerSynapse(permanence, Cell().apply {
-            addState(Cell.States.ACTIVE)
-            fixStates() }))
+            isActive = true
+        }))
         assertTrue(segment.isSegmentActive(Time.NOW))
 
         assertFalse(segment.isSegmentLearn(Time.NOW))
         segment.synapses.add(InnerSynapse(permanence, Cell().apply {
-            addState(Cell.States.LEARN)
-            fixStates()
+            isLearn = true
         }))
         segment.synapses.add(InnerSynapse(permanence, Cell().apply {
-            addState(Cell.States.LEARN)
-            fixStates()
+            isLearn = true
         }))
         assertTrue(segment.isSegmentLearn(Time.NOW))
     }

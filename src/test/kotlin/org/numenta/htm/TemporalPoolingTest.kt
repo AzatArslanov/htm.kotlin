@@ -34,12 +34,10 @@ class TemporalPoolingTest : MockitoTest() {
         val permanence = 0.0
         val segment = Segment(0, permanence).apply {
             synapses.add(InnerSynapse(permanence, Cell().apply {
-                addState(Cell.States.ACTIVE)
-                fixStates()
+                isActive = true
             }))
             synapses.add(InnerSynapse(permanence, Cell().apply {
-                addState(Cell.States.ACTIVE)
-                fixStates()
+                isActive = true
             }))
         }
 
@@ -69,8 +67,8 @@ class TemporalPoolingTest : MockitoTest() {
 
         temporalPooling.process(listOf(activeColumn))
 
-        verify(cell, times(1)).addState(Cell.States.ACTIVE)
-        verify(cell, times(1)).addState(Cell.States.LEARN)
+        verify(cell, times(1)).isActive = true
+        verify(cell, times(1)).isLearn = true
         verify(cell, times(1)).fixStates()
 
         reset(segment)
@@ -80,8 +78,8 @@ class TemporalPoolingTest : MockitoTest() {
         once(activeColumn.getBestMatchingCell(Time.PAST, 10)).thenReturn(cell)
 
         temporalPooling.process(listOf(activeColumn))
-        verify(cell, times(1)).addState(Cell.States.ACTIVE)
-        verify(cell, times(1)).addState(Cell.States.LEARN)
+        verify(cell, times(1)).isActive =  true
+        verify(cell, times(1)).isLearn =  true
         verify(cell, times(1)).fixStates()
         verify(cell, times(1)).toUpdate = any()
 

@@ -34,6 +34,11 @@ class TemporalPooling(val field: Field) {
     }
 
     fun process(activeColumns: List<Column>) {
+        fixStates()
+        firstPhase(activeColumns)
+    }
+
+    private fun firstPhase(activeColumns: List<Column>) {
         activeColumns.forEach { column ->
             var buPredicted = false
             var lcChosen = false
@@ -42,10 +47,10 @@ class TemporalPooling(val field: Field) {
                     val activeSegment = cell.getActiveSegment(Time.PAST)
                     if (activeSegment.isSequenceSegment) {
                         buPredicted = true
-                        cell.addState(Cell.States.ACTIVE)
+                        cell.isActive = true
                         if (activeSegment.isSegmentLearn(Time.PAST)) {
                             lcChosen = true
-                            cell.addState(Cell.States.LEARN)
+                            cell.isLearn = true
                         }
                     }
                 }
@@ -53,19 +58,18 @@ class TemporalPooling(val field: Field) {
 
             if (!buPredicted) {
                 column.cells.forEach {
-                    it.addState(Cell.States.ACTIVE)
+                    it.isActive = true
                 }
             }
 
             if (!lcChosen) {
                 val cell = column.getBestMatchingCell(Time.PAST, minThreshold)
-                cell.addState(Cell.States.LEARN)
+                cell.isLearn = true
                 val update = getSegmentActiveSynapses(Time.PAST, true, null)
                 update.isSequenceSegment = true
                 cell.toUpdate = update
             }
         }
-        fixStates()
     }
 
     private fun fixStates() {

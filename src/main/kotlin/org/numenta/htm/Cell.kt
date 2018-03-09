@@ -2,45 +2,27 @@ package org.numenta.htm
 
 enum class Time {NOW, PAST}
 
-class Cell(isPredictive: Boolean = false, isActive:Boolean = false, isLearn:Boolean = false) {
-    private var isNowPredictive: Boolean = isPredictive
-        private set(value) {
-            isPastPredictive = isNowPredictive
-            field = value
-        }
-    private var isNowActive: Boolean = isActive
-        private set(value) {
-            isPastActive = isNowActive
-            field = value
-        }
-    private var isNowLearn: Boolean = isLearn
-        private set(value) {
-            isPastLearn = isNowLearn
-            field = value
-        }
-
+class Cell(var isPredictive: Boolean = false, var isActive: Boolean = false, var isLearn: Boolean = false) {
     var toUpdate: Cell.Update? = null
 
     private var isPastPredictive: Boolean = false
     private var isPastActive: Boolean = false
     private var isPastLearn: Boolean = false
 
-    private val lazyStates = HashSet<States>()
-
-    fun addState(state: States) {
-        lazyStates.add(state)
-    }
 
     fun fixStates() {
-        isNowPredictive = lazyStates.contains(States.PREDICTIVE)
-        isNowLearn = lazyStates.contains(States.LEARN)
-        isNowActive = lazyStates.contains(States.ACTIVE)
-        lazyStates.clear()
+        isPastPredictive = isPredictive
+        isPastLearn = isLearn
+        isPastActive = isActive
+
+        isPredictive = false
+        isLearn = false
+        isActive = false
     }
 
-    fun isActive(time: Time): Boolean = if (time == Time.NOW) isNowActive else isPastActive
-    fun isLearn(time: Time): Boolean = if (time == Time.NOW) isNowLearn else isPastLearn
-    fun isPredictive(time: Time): Boolean = if (time == Time.NOW) isNowPredictive else isPastPredictive
+    fun isActive(time: Time): Boolean = if (time == Time.NOW) isActive else isPastActive
+    fun isLearn(time: Time): Boolean = if (time == Time.NOW) isLearn else isPastLearn
+    fun isPredictive(time: Time): Boolean = if (time == Time.NOW) isPredictive else isPastPredictive
 
     val segments: MutableList<Segment> = ArrayList()
 
