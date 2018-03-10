@@ -46,38 +46,52 @@ class TemporalPoolingTest : MockitoTest() {
 
     @Test
     fun process() {
+        val threshold = 10
         val field = mock(Field::class.java)
         val activeColumn = mock(Column::class.java)
         val cell = mock(Cell::class.java)
         val segment = mock(Segment::class.java)
+        val toUpdate = ArrayList<Cell.Update>()
         once(segment.isSequenceSegment).thenReturn(true)
         once(segment.isSegmentLearn(Time.PAST)).thenReturn(true)
+        once(segment.isSegmentActive(Time.NOW)).thenReturn(true)
         once(cell.isPredictive(Time.PAST)).thenReturn(true)
         once(cell.getActiveSegment(Time.PAST)).thenReturn(segment)
         once(activeColumn.cells).thenReturn(listOf(cell).toMutableList())
         once(field.columns).thenReturn(listOf(activeColumn).toMutableList())
+        once(cell.segments).thenReturn(listOf(segment).toMutableList())
+        once(cell.toUpdate).thenReturn(toUpdate)
+        once(cell.getBestMatchingSegment(Time.PAST, threshold)).thenReturn(segment)
+
 
         val temporalPooling = TemporalPooling(field).apply {
-            minThreshold = 10
+            minThreshold = threshold
         }
 
         temporalPooling.process(listOf(activeColumn))
 
         verify(cell, times(1)).isActive = true
         verify(cell, times(1)).isLearn = true
+        verify(cell, times(1)).isPredictive = true
         verify(cell, times(1)).fixStates()
+        verify(cell, times(1)).getBestMatchingSegment(Time.PAST, threshold)
+        assertEquals(2, toUpdate.size)
 
         reset(segment)
         reset(cell)
+        toUpdate.clear()
 
         once(segment.isSequenceSegment).thenReturn(false)
         once(activeColumn.getBestMatchingCell(Time.PAST, 10)).thenReturn(cell)
+        once(cell.toUpdate).thenReturn(toUpdate)
 
         temporalPooling.process(listOf(activeColumn))
         verify(cell, times(1)).isActive =  true
         verify(cell, times(1)).isLearn =  true
         verify(cell, times(1)).fixStates()
-        verify(cell, times(1)).toUpdate = any()
+        assertEquals(2, toUpdate.size)
+
+
 
     }
 }

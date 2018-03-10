@@ -3,7 +3,8 @@ package org.numenta.htm
 enum class Time {NOW, PAST}
 
 class Cell(var isPredictive: Boolean = false, var isActive: Boolean = false, var isLearn: Boolean = false) {
-    var toUpdate: Cell.Update? = null
+
+    val toUpdate = ArrayList<Update>()
 
     private var isPastPredictive: Boolean = false
     private var isPastActive: Boolean = false

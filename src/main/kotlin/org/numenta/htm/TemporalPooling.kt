@@ -36,6 +36,24 @@ class TemporalPooling(val field: Field) {
     fun process(activeColumns: List<Column>) {
         fixStates()
         firstPhase(activeColumns)
+        secondPhase()
+    }
+
+    private fun secondPhase() {
+        field.columns.forEach {
+            it.cells.forEach { cell ->
+                cell.segments.forEach { segment ->
+                    if (segment.isSegmentActive(Time.NOW)) {
+                        cell.isPredictive = true
+                        val update = getSegmentActiveSynapses(Time.NOW, false, segment)
+                        cell.toUpdate.add(update)
+                    }
+                }
+                val predUpdate = cell.getBestMatchingSegment(Time.PAST, minThreshold)
+                val update = getSegmentActiveSynapses(Time.PAST, true, predUpdate)
+                cell.toUpdate.add(update)
+            }
+        }
     }
 
     private fun firstPhase(activeColumns: List<Column>) {
@@ -67,7 +85,7 @@ class TemporalPooling(val field: Field) {
                 cell.isLearn = true
                 val update = getSegmentActiveSynapses(Time.PAST, true, null)
                 update.isSequenceSegment = true
-                cell.toUpdate = update
+                cell.toUpdate.add(update)
             }
         }
     }
