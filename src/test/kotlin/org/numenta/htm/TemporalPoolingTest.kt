@@ -59,7 +59,7 @@ class TemporalPoolingTest : MockitoTest() {
         once(cell.getActiveSegment(Time.PAST)).thenReturn(segment)
         once(activeColumn.cells).thenReturn(listOf(cell).toMutableList())
         once(field.columns).thenReturn(listOf(activeColumn).toMutableList())
-        once(cell.segments).thenReturn(listOf(segment).toMutableList())
+        once(cell.segments).thenReturn(setOf(segment).toMutableSet())
         once(cell.toUpdate).thenReturn(toUpdate)
         once(cell.getBestMatchingSegment(Time.PAST, threshold)).thenReturn(segment)
 

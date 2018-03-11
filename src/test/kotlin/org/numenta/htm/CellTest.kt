@@ -80,5 +80,37 @@ class CellTest {
 
     }
 
+    @Test
+    fun adaptSegments() {
+        val innerSynapseOne = InnerSynapse(0.4, Cell())
+        val innerSynapseTwo = InnerSynapse(0.2, Cell())
+        val segmentOne = Segment(0, 0.0).apply {
+            synapses.add(innerSynapseOne)
+            isSequenceSegment = false
+        }
+        val update = Cell.Update(segmentOne).apply {
+            isSequenceSegment = true
+            adaptSynapses.add(innerSynapseOne)
+            newSynapses.add(innerSynapseTwo)
+        }
+        val cell = Cell().apply {
+            segments.add(segmentOne)
+            toUpdate.add(update)
+        }
+        cell.adaptSegments(0.1, 0.2, true)
+        assertEquals(0, cell.toUpdate.size)
+        assertEquals(1, cell.segments.size)
+        assertEquals(true, segmentOne.isSequenceSegment)
+        assertEquals(2, segmentOne.synapses.size)
+        assertEquals(0.5, innerSynapseOne.permanence, 0.0)
+        assertEquals(0.2, innerSynapseTwo.permanence, 0.0)
+
+        cell.toUpdate.add(update)
+        cell.adaptSegments(0.1, 0.5, false)
+
+        assertEquals(0.0, innerSynapseOne.permanence, 0.0)
+        assertEquals(0.2, innerSynapseTwo.permanence, 0.0)
+    }
+
 
 }
