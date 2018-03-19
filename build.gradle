@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin = '1.2.21'
+        kotlin = '1.2.30'
         junit = '4.12'
         mockito = '2.15.0'
     }
