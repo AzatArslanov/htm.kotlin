@@ -1,5 +1,5 @@
 # Implementation of Hierarchical Temporal Memory
-# (This project was done to better understand the theory of HTM)
+**This project was done to better understand the theory of HTM**
 
 Hierarchical temporal memory (HTM) is a biologically constrained theory of machine intelligence originally described in 
 the 2004 book On Intelligence by Jeff Hawkins with Sandra Blakeslee. HTM is based on neuroscience and the physiology 
