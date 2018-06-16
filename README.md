@@ -3,7 +3,8 @@ Hierarchical temporal memory (HTM) is a biologically constrained theory of machi
 the 2004 book On Intelligence by Jeff Hawkins with Sandra Blakeslee. HTM is based on neuroscience and the physiology 
 and interaction of pyramidal neurons in the neocortex of the human brain. The technology has been tested 
 and implemented in software through example applications from Numenta 
-and commercial applications from Numenta’s partners.[Wiki](https://en.wikipedia.org/wiki/Hierarchical_temporal_memory) 
+and commercial applications from Numenta’s partners.[[Wiki]](https://en.wikipedia.org/wiki/Hierarchical_temporal_memory) 
+
 See more at [hierarchical-temporal-memory](https://numenta.org/hierarchical-temporal-memory/)
 
 # HTM Region
@@ -26,8 +27,8 @@ val region = Region(regionSize, inputSize, cellsPerColumn) {
                 it is said to be connected. */
                 connectedPermInitialRange = 0.2 // Small range around connectedPermThreshold.
                 inhibitionRadius = 0 // Average connected receptive field size of the columns.
-                desiredLocalActivity = 0.3 /* A parameter controlling the number of columns that will be winners after the inhibition step.
-                Average connected receptive field */
+                desiredLocalActivity = 0.3 /* A parameter controlling the number of columns 
+                that will be winners after the inhibition step. */
                 permanenceInc = 0.1 // Amount permanence values of synapses are incremented during learning.
                 permanenceDec = 0.1 // Amount permanence values of synapses are decremented during learning.        
             }
